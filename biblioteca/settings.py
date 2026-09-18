@@ -25,7 +25,10 @@ SECRET_KEY = "django-insecure-qc_()xgafis!v8be9zdb29_p#f1oa+eh3j8h%)^akrcn&rttn1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = [
+    'https://localhost:8000',
+]
 
 
 # Application definition
@@ -42,6 +45,9 @@ INSTALLED_APPS = [
     'emprestimos',
     'reservas',
     'prazo',
+    'funcionarios',
+    'exemplares', 
+
 ]
 
 MIDDLEWARE = [
