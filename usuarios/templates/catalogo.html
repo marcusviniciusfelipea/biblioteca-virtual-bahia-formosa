@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Catálogo · Biblioteca Virtual Baía Formosa{% endblock %}
+
+{% block conteudo %}
+
+<section class="catalogo-page">
+
+    <div class="catalogo-topo">
+        <span class="eyebrow">ACERVO DA BIBLIOTECA</span>
+
+        <h1>Catálogo de livros</h1>
+
+        <p>
+            Encontre livros por título ou autor.
+        </p>
+    </div>
+
+
+    <form class="catalog-search" method="get">
+
+        <input
+            type="search"
+            name="q"
+            value="{{ busca }}"
+            placeholder="Pesquisar por título ou autor..."
+            aria-label="Pesquisar no catálogo"
+        >
+
+        <button type="submit">
+            Pesquisar
+        </button>
+
+    </form>
+
+
+    {% if livros %}
+
+        <div class="catalog-grid">
+
+            {% for livro in livros %}
+
+                <article class="book-card">
+
+                    <a href="#">
+
+                        <div class="book-cover fallback-cover">
+
+                            <b>
+                                {{ livro.titulo|first|upper }}
+                            </b>
+
+                            <span>
+                                {{ livro.titulo }}
+                            </span>
+
+                        </div>
+
+                        <strong>
+                            {{ livro.titulo }}
+                        </strong>
+
+                        <small>
+                            {{ livro.autor }}
+                        </small>
+
+                    </a>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-card">
+
+            <h3>Nenhum livro encontrado.</h3>
+
+            {% if busca %}
+
+                <p>
+                    Não encontramos livros para
+                    <strong>"{{ busca }}"</strong>.
+                </p>
+
+            {% else %}
+
+                <p>
+                    O acervo ainda está sendo cadastrado.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

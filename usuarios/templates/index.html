@@ -1,6 +1,132 @@
 {% extends 'base.html' %}
+{% load static %}
 
+{% block title %}Início · Biblioteca Virtual Baía Formosa{% endblock %}
 
 {% block conteudo %}
+
+<section class="hero-home">
+    <div class="hero-content">
+        <span class="eyebrow">BIBLIOTECA VIRTUAL · BAÍA FORMOSA</span>
+
+        <h1>
+            Encontre uma história<br>
+            <em>para chamar de sua.</em>
+        </h1>
+
+        <p>
+            Pesquise no acervo, descubra livros e reserve seu próximo empréstimo.
+        </p>
+
+        <form class="main-search" method="get" action="{% url 'inicio' %}">
+            <span aria-hidden="true">⌕</span>
+
+            <input
+                type="search"
+                name="q"
+                value="{{ busca }}"
+                placeholder="Pesquise por título ou autor..."
+                aria-label="Pesquisar no catálogo"
+            >
+
+            <button type="submit">Pesquisar</button>
+        </form>
+    </div>
+
+    <div class="hero-logo-card">
+        <img
+            src="{% static 'img/semec.jpg' %}"
+            alt="SEMEC - Secretaria Municipal de Educação e Cultura de Baía Formosa/RN"
+        >
+
+        <span>
+            Secretaria Municipal de Educação e Cultura
+        </span>
+    </div>
+</section>
+
+<section class="home-section">
+    <div class="section-top">
+        <div>
+            <span class="eyebrow">ACERVO</span>
+            <h2>Livros disponíveis no sistema</h2>
+        </div>
+
+        <a href="{% url 'inicio' %}">Ver catálogo completo →</a>
+    </div>
+
+    {% if livros %}
+        <div class="category-row">
+            <div class="category-title">
+                <h3>Acervo da biblioteca</h3>
+            </div>
+
+            <div class="book-carousel">
+                {% for livro in livros %}
+                    <div class="book-card">
+                        <a href="#">
+                            <div class="book-cover fallback-cover">
+                                <b>{{ livro.titulo|first|upper }}</b>
+                                <span>{{ livro.titulo }}</span>
+                            </div>
+
+                            <strong>{{ livro.titulo }}</strong>
+                            <small>{{ livro.autor }}</small>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-card">
+            <h3>O acervo ainda está sendo cadastrado.</h3>
+
+            <p>
+                Os livros adicionados pelo bibliotecário aparecerão
+                automaticamente nesta página.
+            </p>
+        </div>
+    {% endif %}
+</section>
+
+<section class="quick-services">
+    <div>
+        <span class="eyebrow">COMO FUNCIONA</span>
+
+        <h2>Da busca à devolução.</h2>
+
+        <p>
+            Consulte o acervo, reserve um exemplar, acompanhe a fila
+            e veja seus prazos no perfil.
+        </p>
+    </div>
+
+    <div class="service-mini">
+        <span>01</span>
+        <strong>Pesquisar</strong>
+
+        <p>
+            Use título ou autor para encontrar um livro.
+        </p>
+    </div>
+
+    <div class="service-mini">
+        <span>02</span>
+        <strong>Reservar</strong>
+
+        <p>
+            Se estiver ocupado, entre na fila digital.
+        </p>
+    </div>
+
+    <div class="service-mini">
+        <span>03</span>
+        <strong>Acompanhar</strong>
+
+        <p>
+            Veja seus empréstimos, reservas e prazos.
+        </p>
+    </div>
+</section>
 
 {% endblock %}

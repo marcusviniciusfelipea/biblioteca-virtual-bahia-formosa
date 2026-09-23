@@ -3,29 +3,126 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>{% block title %}Biblioteca Virtual{% endblock %}</title>
-            </head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-            <body>
+    <title>{% block title %}Biblioteca Virtual · Baía Formosa{% endblock %}</title>
 
-                <header>
-                        <h1>Biblioteca Virtual</h1>
+    <meta name="description" content="Biblioteca Virtual de Baía Formosa/RN.">
 
-                                <nav>
-                                            <a href="/">Início</a>
-                                                        <a href="/catalogo/">Catálogo</a>
-                                                                </nav>
-                                                                    </header>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
 
-                                                                        <main>
-                                                                                {% block conteudo %}
-                                                                                        {% endblock %}
-                                                                                            </main>
+<body>
 
-                                                                                                <footer>
-                                                                                                        <p>Biblioteca Virtual - Baía Formosa</p>
-                                                                                                            </footer>
+<header class="site-header">
 
-                                                                                                            </body>
-                                                                                                            </html>
+    <div class="header-inner">
+
+        <a class="site-brand" href="/">
+            <span class="brand-symbol">BF</span>
+
+            <span>
+                <strong>Biblioteca</strong>
+                <small>Baía Formosa</small>
+            </span>
+        </a>
+
+        <nav class="main-nav" aria-label="Navegação principal">
+            <a href="/">Início</a>
+            <a href="/catalogo/">Catálogo</a>
+            <a href="/servicos/">Serviços</a>
+            <a href="/contato/">Contato</a>
+        </nav>
+
+        <div class="header-actions">
+
+            <a class="button outline" href="/login/">
+                Entrar
+            </a>
+
+            <a class="button primary" href="/cadastro/">
+                Criar conta
+            </a>
+
+            <details class="more-menu">
+
+                <summary aria-label="Mais opções">
+                    ⋯
+                </summary>
+
+                <div class="dropdown">
+                    <a href="/bibliotecario/login/">
+                        Área do bibliotecário
+                    </a>
+                </div>
+
+            </details>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main>
+
+    {% block conteudo %}
+    {% endblock %}
+
+</main>
+
+
+<footer class="rodape">
+
+    <div class="rodape-conteudo">
+
+        <div class="rodape-coluna">
+
+            <h3>Biblioteca Virtual</h3>
+
+            <p>Baía Formosa - RN</p>
+
+            <p>
+                Secretaria Municipal de Educação e Cultura
+            </p>
+
+        </div>
+
+
+        <div class="rodape-coluna">
+
+            <h3>Contato</h3>
+
+            <p>📞 (84) 99999-9999</p>
+
+            <p>✉️ biblioteca@exemplo.com</p>
+
+        </div>
+
+
+        <div class="rodape-coluna">
+
+            <h3>Atendimento</h3>
+
+            <p>Segunda a sexta</p>
+
+            <p>08:00 às 17:00</p>
+
+        </div>
+
+    </div>
+
+
+    <div class="rodape-inferior">
+
+        <p>
+            © 2026 Biblioteca Virtual - Baía Formosa/RN
+        </p>
+
+    </div>
+
+</footer>
+
+</body>
+</html>
