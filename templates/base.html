@@ -34,18 +34,34 @@
             <a href="/contato/">Contato</a>
         </nav>
 
-        <div class="header-actions">
+<div class="header-actions">
 
-            <a class="button outline" href="/login/">
-                Entrar
-            </a>
+    {% if request.session.usuario_id %}
 
-            <a class="button primary" href="/cadastro/">
-                Criar conta
-            </a>
+<span class="user-welcome">
+    Olá, {{ usuario.nome }}!
+</span>
 
-            <details class="more-menu">
+        <a class="button outline" href="#">
+            Minha conta
+        </a>
 
+<a class="button primary" href="{% url 'logout' %}">
+    Sair
+</a>
+    {% else %}
+
+        <a class="button outline" href="/login/">
+            Entrar
+        </a>
+
+        <a class="button primary" href="/cadastro/">
+            Criar conta
+        </a>
+
+    {% endif %}
+
+    <details class="more-menu">
                 <summary aria-label="Mais opções">
                     ⋯
                 </summary>

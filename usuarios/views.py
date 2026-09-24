@@ -16,11 +16,18 @@ def inicio(request):
             Q(autor__icontains=busca)
         )
 
+    usuario = None
+
+    if request.session.get('usuario_id'):
+        usuario = Usuario.objects.filter(
+            id_usuario=request.session['usuario_id']
+        ).first()
+
     return render(request, 'index.html', {
         'livros': livros,
         'busca': busca,
+        'usuario': usuario,
     })
-
 
 def cadastro(request):
 
@@ -88,3 +95,7 @@ def login(request):
         })
 
     return render(request, 'login.html')
+
+def logout(request):
+    request.session.flush()
+    return redirect('inicio')
