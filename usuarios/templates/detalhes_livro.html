@@ -42,7 +42,60 @@
 
         <span class="eyebrow">ACERVO</span>
 
-        <h2>Exemplares</h2>
+        <h2>Informações do livro</h2>
+
+
+        <div class="message-thread">
+
+            <strong>Autor</strong>
+
+            <p>
+                {{ livro.autor }}
+            </p>
+
+        </div>
+
+
+        <div class="message-thread">
+
+            <strong>Exemplares</strong>
+
+            <p>
+                {{ quantidade_exemplares }}
+                exemplar{% if quantidade_exemplares != 1 %}es{% endif %}
+                no acervo.
+            </p>
+
+        </div>
+
+
+        <div class="message-thread">
+
+            <strong>Disponibilidade</strong>
+
+            <p>
+
+                {% if status == 'Disponível' %}
+
+                    🟢 {{ quantidade_disponiveis }}
+                    disponível{% if quantidade_disponiveis != 1 %}is{% endif %}
+
+                {% elif status == 'Indisponível' %}
+
+                    🔴 Indisponível
+
+                {% else %}
+
+                    ⚪ Sem exemplares
+
+                {% endif %}
+
+            </p>
+
+        </div>
+
+
+        <h2>Exemplares cadastrados</h2>
 
 
         {% if exemplares %}
