@@ -1,8 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db.models import Q
 
 from livros.models import Livro
-from exemplares.models import Exemplar
 from usuarios.models import Usuario
 
 
@@ -23,11 +22,24 @@ def inicio(request):
     })
 
 
-def servicos(request):
-    return render(request, 'servicos.html')
-
-
 def cadastro(request):
+
+    if request.method == 'POST':
+
+        nome = request.POST.get('nome')
+        email = request.POST.get('email')
+        telefone = request.POST.get('telefone')
+        senha = request.POST.get('senha')
+
+        Usuario.objects.create(
+            nome=nome,
+            email=email,
+            telefone=telefone,
+            senha=senha
+        )
+
+        return redirect('inicio')
+
     return render(request, 'cadastro.html')
 
 
@@ -46,6 +58,11 @@ def catalogo(request):
         'livros': livros,
         'busca': busca,
     })
+
+
+def servicos(request):
+    return render(request, 'servicos.html')
+
 
 def contato(request):
     return render(request, 'contato.html')
