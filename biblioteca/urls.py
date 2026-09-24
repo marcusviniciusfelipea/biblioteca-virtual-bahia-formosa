@@ -8,10 +8,17 @@ urlpatterns = [
     path('', views.inicio, name='inicio'),
     path('cadastro/', views.cadastro, name='cadastro'),
     path('login/', views.login, name='login'),
-
-    path('catalogo/', views.catalogo, name='catalogo'),
-    path('servicos/', views.servicos, name='servicos'),
-    path('contato/', views.contato, name='contato'),
     path('logout/', views.logout, name='logout'),
     path('minha-conta/', views.minha_conta, name='minha_conta'),
+
+    path('catalogo/', views.catalogo, name='catalogo'),
+
+    path(
+        'livro/<int:id_livro>/',
+        views.detalhes_livro,
+        name='detalhes_livro'
+    ),
+
+    path('servicos/', views.servicos, name='servicos'),
+    path('contato/', views.contato, name='contato'),
 ]

@@ -75,34 +75,57 @@
 
                 {% for livro in livros %}
 
-                    <article class="book-card">
+<article class="book-card">
 
-                        <a href="#">
+<a href="{% url 'detalhes_livro' livro.livro.id_livro %}">
+        <div class="book-cover fallback-cover">
 
-                            <div class="book-cover fallback-cover">
+            <b>
+                {{ livro.livro.titulo|first|upper }}
+            </b>
 
-                                <b>
-                                    {{ livro.titulo|first|upper }}
-                                </b>
+            <span>
+                {{ livro.livro.titulo }}
+            </span>
 
-                                <span>
-                                    {{ livro.titulo }}
-                                </span>
+        </div>
 
-                            </div>
+        <strong>
+            {{ livro.livro.titulo }}
+        </strong>
 
-                            <strong>
-                                {{ livro.titulo }}
-                            </strong>
+        <small>
+            {{ livro.livro.autor }}
+        </small>
 
-                            <small>
-                                {{ livro.autor }}
-                            </small>
+        <small>
+            {{ livro.quantidade_exemplares }}
+            exemplar{% if livro.quantidade_exemplares != 1 %}es{% endif %}
+        </small>
 
-                        </a>
+        {% if livro.status == 'Disponível' %}
 
-                    </article>
+            <span class="availability">
+                🟢 Disponível
+            </span>
 
+        {% elif livro.status == 'Indisponível' %}
+
+            <span class="availability">
+                🔴 Indisponível
+            </span>
+
+        {% else %}
+
+            <span class="availability">
+                ⚪ Sem exemplares
+            </span>
+
+        {% endif %}
+
+    </a>
+
+</article>
                 {% endfor %}
 
             </div>

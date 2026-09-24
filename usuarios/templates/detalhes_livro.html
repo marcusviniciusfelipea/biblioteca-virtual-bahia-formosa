@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ livro.titulo }} · Biblioteca Virtual Baía Formosa
+{% endblock %}
+
+{% block conteudo %}
+
+<section class="page-head simple">
+
+    <span class="eyebrow">DETALHES DO LIVRO</span>
+
+    <h1>{{ livro.titulo }}</h1>
+
+    <p>
+        Autor: {{ livro.autor }}
+    </p>
+
+</section>
+
+
+<section class="contact-layout">
+
+    <div class="panel">
+
+        <div class="book-cover fallback-cover">
+
+            <b>
+                {{ livro.titulo|first|upper }}
+            </b>
+
+            <span>
+                {{ livro.titulo }}
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="panel contact-form">
+
+        <span class="eyebrow">ACERVO</span>
+
+        <h2>Exemplares</h2>
+
+
+        {% if exemplares %}
+
+            {% for exemplar in exemplares %}
+
+                <div class="message-thread">
+
+                    <strong>
+                        Exemplar {{ exemplar.id_exemplar }}
+                    </strong>
+
+                    <p>
+                        {{ exemplar.titulo }}
+                    </p>
+
+                    <small>
+                        Autor: {{ exemplar.autor }}
+                    </small>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>
+                Nenhum exemplar deste livro foi cadastrado.
+            </p>
+
+        {% endif %}
+
+
+        <a
+            class="button outline"
+            href="{% url 'catalogo' %}"
+        >
+            ← Voltar ao catálogo
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}
