@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Entrar · Biblioteca Virtual Baía Formosa{% endblock %}
+
+{% block conteudo %}
+
+<section class="auth-shell">
+
+    <div class="auth-intro">
+
+        <span class="eyebrow">BIBLIOTECA VIRTUAL</span>
+
+        <h1>
+            Bem-vinda
+            <em>à biblioteca.</em>
+        </h1>
+
+        <p>
+            Entre na sua conta para reservar livros e acompanhar
+            seus empréstimos e reservas.
+        </p>
+
+    </div>
+
+
+    <div class="auth-card panel">
+
+        <span class="eyebrow">LOGIN</span>
+
+        <h2>Entrar</h2>
+
+        <form method="post" class="form-grid">
+
+            {% csrf_token %}
+
+            <label for="email">
+                E-mail
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Digite seu e-mail"
+                required
+            >
+
+
+            <label for="senha">
+                Senha
+            </label>
+
+            <input
+                type="password"
+                id="senha"
+                name="senha"
+                placeholder="Digite sua senha"
+                required
+            >
+
+
+            <button class="button primary full" type="submit">
+                Entrar
+            </button>
+
+        </form>
+
+
+        <div class="auth-switch">
+
+            Ainda não possui uma conta?
+
+            <a href="/cadastro/">
+                Criar conta
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

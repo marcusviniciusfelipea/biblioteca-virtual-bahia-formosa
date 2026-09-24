@@ -66,3 +66,25 @@ def servicos(request):
 
 def contato(request):
     return render(request, 'contato.html')
+
+def login(request):
+
+    if request.method == 'POST':
+
+        email = request.POST.get('email')
+        senha = request.POST.get('senha')
+
+        usuario = Usuario.objects.filter(
+            email=email,
+            senha=senha
+        ).first()
+
+        if usuario:
+            request.session['usuario_id'] = usuario.id_usuario
+            return redirect('inicio')
+
+        return render(request, 'login.html', {
+            'erro': 'E-mail ou senha incorretos.'
+        })
+
+    return render(request, 'login.html')
