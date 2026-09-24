@@ -99,3 +99,16 @@ def login(request):
 def logout(request):
     request.session.flush()
     return redirect('inicio')
+
+def minha_conta(request):
+
+    if not request.session.get('usuario_id'):
+        return redirect('login')
+
+    usuario = Usuario.objects.filter(
+        id_usuario=request.session['usuario_id']
+    ).first()
+
+    return render(request, 'minha_conta.html', {
+        'usuario': usuario,
+    })

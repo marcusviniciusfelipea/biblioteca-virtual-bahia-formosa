@@ -42,9 +42,9 @@
     Olá, {{ usuario.nome }}!
 </span>
 
-        <a class="button outline" href="#">
-            Minha conta
-        </a>
+<a class="button outline" href="{% url 'minha_conta' %}">
+    Minha conta
+</a>
 
 <a class="button primary" href="{% url 'logout' %}">
     Sair

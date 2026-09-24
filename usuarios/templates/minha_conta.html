@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Minha conta · Biblioteca Virtual Baía Formosa{% endblock %}
+
+{% block conteudo %}
+
+<section class="page-head simple">
+
+    <span class="eyebrow">MINHA CONTA</span>
+
+    <h1>Olá, {{ usuario.nome }}!</h1>
+
+    <p>
+        Consulte suas informações e acompanhe sua atividade na biblioteca.
+    </p>
+
+</section>
+
+
+<section class="contact-layout">
+
+    <div class="panel">
+
+        <span class="eyebrow">MEUS DADOS</span>
+
+        <h2>Informações pessoais</h2>
+
+        <div class="message-thread">
+
+            <strong>Nome</strong>
+
+            <p>{{ usuario.nome }}</p>
+
+        </div>
+
+        <div class="message-thread">
+
+            <strong>E-mail</strong>
+
+            <p>{{ usuario.email }}</p>
+
+        </div>
+
+        <div class="message-thread">
+
+            <strong>Telefone</strong>
+
+            <p>{{ usuario.telefone }}</p>
+
+        </div>
+
+    </div>
+
+
+    <div class="panel contact-form">
+
+        <span class="eyebrow">BIBLIOTECA</span>
+
+        <h2>Minha atividade</h2>
+
+        <p>
+            Aqui ficarão seus empréstimos, reservas e, posteriormente,
+            seus livros favoritos.
+        </p>
+
+        <a class="button primary" href="{% url 'catalogo' %}">
+            Explorar catálogo →
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}
