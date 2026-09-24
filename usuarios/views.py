@@ -4,6 +4,7 @@ from django.utils import timezone
 
 from livros.models import Livro
 from usuarios.models import Usuario
+from funcionarios.models import Funcionario
 from exemplares.models import Exemplar
 from emprestimos.models import Emprestimo
 
@@ -31,6 +32,7 @@ def inicio(request):
         'busca': busca,
         'usuario': usuario,
     })
+
 
 def cadastro(request):
 
@@ -106,12 +108,14 @@ def catalogo(request):
         'busca': busca,
     })
 
+
 def servicos(request):
     return render(request, 'servicos.html')
 
 
 def contato(request):
     return render(request, 'contato.html')
+
 
 def login(request):
 
@@ -135,9 +139,11 @@ def login(request):
 
     return render(request, 'login.html')
 
+
 def logout(request):
     request.session.flush()
     return redirect('inicio')
+
 
 def minha_conta(request):
 
@@ -151,6 +157,7 @@ def minha_conta(request):
     return render(request, 'minha_conta.html', {
         'usuario': usuario,
     })
+
 
 def detalhes_livro(request, id_livro):
 
@@ -194,3 +201,26 @@ def detalhes_livro(request, id_livro):
         'quantidade_disponiveis': quantidade_disponiveis,
         'status': status,
     })
+
+
+def bibliotecario_login(request):
+
+    if request.method == 'POST':
+
+        email = request.POST.get('email')
+        senha = request.POST.get('senha')
+
+        funcionario = Funcionario.objects.filter(
+            email=email,
+            senha=senha
+        ).first()
+
+        if funcionario:
+            request.session['funcionario_id'] = funcionario.id_funcionario
+            return redirect('inicio')
+
+        return render(request, 'bibliotecario_login.html', {
+            'erro': 'E-mail ou senha incorretos.'
+        })
+
+    return render(request, 'bibliotecario_login.html')

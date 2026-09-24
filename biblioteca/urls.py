@@ -9,6 +9,11 @@ urlpatterns = [
     path('cadastro/', views.cadastro, name='cadastro'),
     path('login/', views.login, name='login'),
     path('logout/', views.logout, name='logout'),
+    path(
+    'bibliotecario/login/',
+    views.bibliotecario_login,
+    name='bibliotecario_login'
+),
     path('minha-conta/', views.minha_conta, name='minha_conta'),
 
     path('catalogo/', views.catalogo, name='catalogo'),
@@ -21,4 +26,5 @@ urlpatterns = [
 
     path('servicos/', views.servicos, name='servicos'),
     path('contato/', views.contato, name='contato'),
+    
 ]

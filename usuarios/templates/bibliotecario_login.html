@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Login do bibliotecário · Biblioteca Virtual Baía Formosa
+{% endblock %}
+
+{% block conteudo %}
+
+<section class="page-head simple">
+
+    <span class="eyebrow">ÁREA DO BIBLIOTECÁRIO</span>
+
+    <h1>Login do bibliotecário</h1>
+
+    <p>
+        Acesse a área administrativa da biblioteca.
+    </p>
+
+</section>
+
+
+<section class="contact-layout">
+
+    <div class="panel contact-form">
+
+        <span class="eyebrow">ACESSO RESTRITO</span>
+
+        <h2>Entrar</h2>
+
+
+        <form method="post">
+
+            {% csrf_token %}
+
+
+            <label for="email">
+                E-mail
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Digite seu e-mail"
+                required
+            >
+
+
+            <label for="senha">
+                Senha
+            </label>
+
+            <input
+                type="password"
+                id="senha"
+                name="senha"
+                placeholder="Digite sua senha"
+                required
+            >
+
+
+            {% if erro %}
+
+                <p>
+                    {{ erro }}
+                </p>
+
+            {% endif %}
+
+
+            <button
+                type="submit"
+                class="button primary"
+            >
+                Entrar
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}
