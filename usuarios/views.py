@@ -23,5 +23,29 @@ def inicio(request):
     })
 
 
+def servicos(request):
+    return render(request, 'servicos.html')
+
+
 def cadastro(request):
     return render(request, 'cadastro.html')
+
+
+def catalogo(request):
+    busca = request.GET.get('q', '').strip()
+
+    livros = Livro.objects.all()
+
+    if busca:
+        livros = livros.filter(
+            Q(titulo__icontains=busca) |
+            Q(autor__icontains=busca)
+        )
+
+    return render(request, 'catalogo.html', {
+        'livros': livros,
+        'busca': busca,
+    })
+
+def contato(request):
+    return render(request, 'contato.html')

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Serviços · Biblioteca Virtual Baía Formosa{% endblock %}
+
+{% block conteudo %}
+
+<section class="page-head simple">
+
+    <span class="eyebrow">BIBLIOTECA VIRTUAL</span>
+
+    <h1>Serviços da biblioteca</h1>
+
+    <p>
+        Consulte o acervo, faça reservas e acompanhe seus empréstimos
+        de forma simples e organizada.
+    </p>
+
+</section>
+
+
+<section class="service-page-grid">
+
+    <article>
+
+        <span>01</span>
+
+        <h2>Consultar o catálogo</h2>
+
+        <p>
+            Pesquise livros disponíveis na biblioteca por título ou autor
+            e conheça o acervo disponível.
+        </p>
+
+        <a class="button outline" href="/catalogo/">
+            Consultar catálogo →
+        </a>
+
+    </article>
+
+
+    <article>
+
+        <span>02</span>
+
+        <h2>Reservar um livro</h2>
+
+        <p>
+            Encontre o livro que deseja e faça uma reserva quando o
+            exemplar estiver disponível ou ocupado.
+        </p>
+
+        <span class="availability">
+            Disponível após o cadastro
+        </span>
+
+    </article>
+
+
+    <article>
+
+        <span>03</span>
+
+        <h2>Acompanhar empréstimos</h2>
+
+        <p>
+            Consulte seus empréstimos e acompanhe as datas previstas
+            para devolução dos exemplares.
+        </p>
+
+        <span class="availability">
+            Disponível após o login
+        </span>
+
+    </article>
+
+
+    <article>
+
+        <span>04</span>
+
+        <h2>Atendimento</h2>
+
+        <p>
+            Entre em contato com a biblioteca para tirar dúvidas sobre
+            o acervo, reservas e empréstimos.
+        </p>
+
+        <a class="button outline" href="/contato/">
+            Falar com a biblioteca →
+        </a>
+
+    </article>
+
+</section>
+
+{% endblock %}

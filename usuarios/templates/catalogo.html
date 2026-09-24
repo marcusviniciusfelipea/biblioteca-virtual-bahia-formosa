@@ -4,98 +4,135 @@
 
 {% block conteudo %}
 
-<section class="catalogo-page">
+<section class="page-head simple">
 
-    <div class="catalogo-topo">
-        <span class="eyebrow">ACERVO DA BIBLIOTECA</span>
+    <span class="eyebrow">ACERVO DA BIBLIOTECA</span>
 
-        <h1>Catálogo de livros</h1>
+    <h1>Catálogo de livros</h1>
+
+    <p>
+        Encontre livros por título ou autor.
+    </p>
+
+</section>
+
+
+<section class="catalog-layout">
+
+    <aside class="filters">
+
+        <h3>Pesquisar no acervo</h3>
 
         <p>
-            Encontre livros por título ou autor.
+            Utilize a busca para encontrar livros pelo título ou pelo autor.
         </p>
-    </div>
+
+    </aside>
 
 
-    <form class="catalog-search" method="get">
+    <div>
 
-        <input
-            type="search"
-            name="q"
-            value="{{ busca }}"
-            placeholder="Pesquisar por título ou autor..."
-            aria-label="Pesquisar no catálogo"
-        >
+        <form class="catalog-search" method="get">
 
-        <button type="submit">
-            Pesquisar
-        </button>
+            <input
+                type="search"
+                name="q"
+                value="{{ busca }}"
+                placeholder="Pesquisar por título ou autor..."
+                aria-label="Pesquisar no catálogo"
+            >
 
-    </form>
+            <button type="submit">
+                Pesquisar
+            </button>
+
+        </form>
 
 
-    {% if livros %}
-
-        <div class="catalog-grid">
-
-            {% for livro in livros %}
-
-                <article class="book-card">
-
-                    <a href="#">
-
-                        <div class="book-cover fallback-cover">
-
-                            <b>
-                                {{ livro.titulo|first|upper }}
-                            </b>
-
-                            <span>
-                                {{ livro.titulo }}
-                            </span>
-
-                        </div>
-
-                        <strong>
-                            {{ livro.titulo }}
-                        </strong>
-
-                        <small>
-                            {{ livro.autor }}
-                        </small>
-
-                    </a>
-
-                </article>
-
-            {% endfor %}
-
-        </div>
-
-    {% else %}
-
-        <div class="empty-card">
-
-            <h3>Nenhum livro encontrado.</h3>
+        <div class="results-top">
 
             {% if busca %}
 
-                <p>
-                    Não encontramos livros para
-                    <strong>"{{ busca }}"</strong>.
-                </p>
+                <span>
+                    Resultados para:
+                    <strong>"{{ busca }}"</strong>
+                </span>
 
             {% else %}
 
-                <p>
-                    O acervo ainda está sendo cadastrado.
-                </p>
+                <span>
+                    Livros do acervo
+                </span>
 
             {% endif %}
 
         </div>
 
-    {% endif %}
+
+        {% if livros %}
+
+            <div class="book-grid">
+
+                {% for livro in livros %}
+
+                    <article class="book-card">
+
+                        <a href="#">
+
+                            <div class="book-cover fallback-cover">
+
+                                <b>
+                                    {{ livro.titulo|first|upper }}
+                                </b>
+
+                                <span>
+                                    {{ livro.titulo }}
+                                </span>
+
+                            </div>
+
+                            <strong>
+                                {{ livro.titulo }}
+                            </strong>
+
+                            <small>
+                                {{ livro.autor }}
+                            </small>
+
+                        </a>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-card">
+
+                <h3>Nenhum livro encontrado.</h3>
+
+                {% if busca %}
+
+                    <p>
+                        Não encontramos livros para
+                        <strong>"{{ busca }}"</strong>.
+                    </p>
+
+                {% else %}
+
+                    <p>
+                        O acervo ainda está sendo cadastrado.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        {% endif %}
+
+    </div>
 
 </section>
 
