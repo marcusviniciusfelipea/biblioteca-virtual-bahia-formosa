@@ -29,9 +29,26 @@
 
         <h2>Entrar</h2>
 
+
+        {% if erros %}
+
+            <div class="form-errors" style="color: red;">
+
+                {% for erro in erros %}
+
+                    <p>{{ erro }}</p>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+
         <form method="post" class="form-grid">
 
             {% csrf_token %}
+
 
             <label for="email">
                 E-mail
@@ -42,6 +59,7 @@
                 id="email"
                 name="email"
                 placeholder="Digite seu e-mail"
+                value="{{ email }}"
                 required
             >
 

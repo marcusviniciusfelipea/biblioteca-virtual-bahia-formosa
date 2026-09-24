@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.utils import timezone
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+import re
 
 from livros.models import Livro
 from usuarios.models import Usuario
@@ -21,28 +24,84 @@ def inicio(request):
         )
 
     usuario = None
+    funcionario = None
 
     if request.session.get('usuario_id'):
         usuario = Usuario.objects.filter(
-            id_usuario=request.session['usuario_id']
-        ).first()
+        id_usuario=request.session['usuario_id']
+    ).first()
+
+    if request.session.get('funcionario_id'):
+        funcionario = Funcionario.objects.filter(
+        id_funcionario=request.session['funcionario_id']
+    ).first()
 
     return render(request, 'index.html', {
         'livros': livros,
         'busca': busca,
         'usuario': usuario,
-    })
+        'funcionario': funcionario,
+})
 
 
 def cadastro(request):
 
     if request.method == 'POST':
 
-        nome = request.POST.get('nome')
-        email = request.POST.get('email')
-        telefone = request.POST.get('telefone')
-        senha = request.POST.get('senha')
+        nome = request.POST.get('nome', '').strip()
+        email = request.POST.get('email', '').strip()
+        telefone = request.POST.get('telefone', '').strip()
+        senha = request.POST.get('senha', '').strip()
 
+        erros = []
+
+        # Verifica se os campos foram preenchidos
+        if not nome:
+            erros.append('O nome é obrigatório.')
+
+        if not email:
+            erros.append('O e-mail é obrigatório.')
+
+        if not telefone:
+            erros.append('O telefone é obrigatório.')
+
+        if not senha:
+            erros.append('A senha é obrigatória.')
+
+        # Verifica o formato do e-mail
+        if email:
+            try:
+                validate_email(email)
+            except ValidationError:
+                erros.append('Digite um e-mail válido.')
+
+        # Verifica se o e-mail já está cadastrado
+        if email and Usuario.objects.filter(email=email).exists():
+            erros.append('Este e-mail já está cadastrado.')
+
+        # Verifica o telefone
+        if telefone:
+            numeros_telefone = re.sub(r'\D', '', telefone)
+
+            if len(numeros_telefone) != 11:
+                erros.append(
+                    'Digite um telefone válido com DDD e 9 dígitos.'
+                )
+
+        # Verifica o tamanho da senha
+        if senha and len(senha) < 6:
+            erros.append('A senha deve ter pelo menos 6 caracteres.')
+
+        # Se houver algum erro, volta para o cadastro
+        if erros:
+            return render(request, 'cadastro.html', {
+                'erros': erros,
+                'nome': nome,
+                'email': email,
+                'telefone': telefone,
+            })
+
+        # Se estiver tudo certo, cria o usuário
         Usuario.objects.create(
             nome=nome,
             email=email,
@@ -53,7 +112,6 @@ def cadastro(request):
         return redirect('inicio')
 
     return render(request, 'cadastro.html')
-
 
 def catalogo(request):
     busca = request.GET.get('q', '').strip()
@@ -121,20 +179,47 @@ def login(request):
 
     if request.method == 'POST':
 
-        email = request.POST.get('email')
-        senha = request.POST.get('senha')
+        email = request.POST.get('email', '').strip()
+        senha = request.POST.get('senha', '').strip()
 
+        erros = []
+
+        # Verifica se os campos foram preenchidos
+        if not email:
+            erros.append('O e-mail é obrigatório.')
+
+        if not senha:
+            erros.append('A senha é obrigatória.')
+
+        # Verifica o formato do e-mail
+        if email:
+            try:
+                validate_email(email)
+            except ValidationError:
+                erros.append('Digite um e-mail válido.')
+
+        # Se houver algum erro, volta para o login
+        if erros:
+            return render(request, 'login.html', {
+                'erros': erros,
+                'email': email,
+            })
+
+        # Procura o usuário
         usuario = Usuario.objects.filter(
             email=email,
             senha=senha
         ).first()
 
         if usuario:
+            request.session.pop('funcionario_id', None)
             request.session['usuario_id'] = usuario.id_usuario
             return redirect('inicio')
 
+        # E-mail ou senha não correspondem
         return render(request, 'login.html', {
-            'erro': 'E-mail ou senha incorretos.'
+            'erros': ['E-mail ou senha incorretos.'],
+            'email': email,
         })
 
     return render(request, 'login.html')
@@ -207,20 +292,58 @@ def bibliotecario_login(request):
 
     if request.method == 'POST':
 
-        email = request.POST.get('email')
-        senha = request.POST.get('senha')
+        email = request.POST.get('email', '').strip()
+        senha = request.POST.get('senha', '').strip()
 
+        erros = []
+
+        # Verifica se os campos foram preenchidos
+        if not email:
+            erros.append('O e-mail é obrigatório.')
+
+        if not senha:
+            erros.append('A senha é obrigatória.')
+
+        # Verifica o formato do e-mail
+        if email:
+            try:
+                validate_email(email)
+            except ValidationError:
+                erros.append('Digite um e-mail válido.')
+
+        # Se houver algum erro, volta para o login
+        if erros:
+            return render(request, 'bibliotecario_login.html', {
+                'erros': erros,
+                'email': email,
+                'usuario': None,
+                'funcionario': None,
+            })
+
+        # Procura o funcionário
         funcionario = Funcionario.objects.filter(
             email=email,
             senha=senha
         ).first()
 
         if funcionario:
+            # Remove o usuário comum da sessão
+            request.session.pop('usuario_id', None)
+
+            # Salva o funcionário na sessão
             request.session['funcionario_id'] = funcionario.id_funcionario
+
             return redirect('inicio')
 
+        # Login incorreto
         return render(request, 'bibliotecario_login.html', {
-            'erro': 'E-mail ou senha incorretos.'
+            'erros': ['E-mail ou senha incorretos.'],
+            'email': email,
+            'usuario': None,
+            'funcionario': None,
         })
 
-    return render(request, 'bibliotecario_login.html')
+    return render(request, 'bibliotecario_login.html', {
+        'usuario': None,
+        'funcionario': None,
+    })

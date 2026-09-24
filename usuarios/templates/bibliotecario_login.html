@@ -28,6 +28,21 @@ Login do bibliotecário · Biblioteca Virtual Baía Formosa
         <h2>Entrar</h2>
 
 
+        {% if erros %}
+
+            <div class="form-errors" style="color: red;">
+
+                {% for erro in erros %}
+
+                    <p>{{ erro }}</p>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+
         <form method="post">
 
             {% csrf_token %}
@@ -42,6 +57,7 @@ Login do bibliotecário · Biblioteca Virtual Baía Formosa
                 id="email"
                 name="email"
                 placeholder="Digite seu e-mail"
+                value="{{ email }}"
                 required
             >
 
@@ -57,15 +73,6 @@ Login do bibliotecário · Biblioteca Virtual Baía Formosa
                 placeholder="Digite sua senha"
                 required
             >
-
-
-            {% if erro %}
-
-                <p>
-                    {{ erro }}
-                </p>
-
-            {% endif %}
 
 
             <button

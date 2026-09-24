@@ -29,9 +29,26 @@
 
         <h2>Seus dados</h2>
 
+
+        {% if erros %}
+
+    <div class="form-errors" style="color: red;">
+
+        {% for erro in erros %}
+
+            <p>{{ erro }}</p>
+
+        {% endfor %}
+
+    </div>
+
+        {% endif %}
+
+
         <form method="post" class="form-grid">
 
             {% csrf_token %}
+
 
             <label for="nome">
                 Nome
@@ -42,6 +59,7 @@
                 id="nome"
                 name="nome"
                 placeholder="Digite seu nome"
+                value="{{ nome }}"
                 required
             >
 
@@ -55,6 +73,7 @@
                 id="email"
                 name="email"
                 placeholder="Digite seu e-mail"
+                value="{{ email }}"
                 required
             >
 
@@ -68,6 +87,7 @@
                 id="telefone"
                 name="telefone"
                 placeholder="(84) 99999-9999"
+                value="{{ telefone }}"
                 required
             >
 
@@ -90,6 +110,7 @@
             </button>
 
         </form>
+
 
         <div class="auth-switch">
 

@@ -36,20 +36,37 @@
 
 <div class="header-actions">
 
-    {% if request.session.usuario_id %}
+    {% if usuario %}
 
-<span class="user-welcome">
-    Olá, {{ usuario.nome }}!
-</span>
+    <span class="user-welcome">
+        Olá, {{ usuario.nome }}!
+    </span>
 
-<a class="button outline" href="{% url 'minha_conta' %}">
-    Minha conta
-</a>
+    <a class="button outline" href="{% url 'minha_conta' %}">
+        Minha conta
+    </a>
 
-<a class="button primary" href="{% url 'logout' %}">
-    Sair
-</a>
-    {% else %}
+    <a class="button primary" href="{% url 'logout' %}">
+        Sair
+    </a>
+
+
+{% elif funcionario %}
+
+    <span class="user-welcome">
+        Olá, {{ funcionario.nome }}!
+    </span>
+
+    <a class="button outline" href="/bibliotecario/login/">
+        Área do bibliotecário
+    </a>
+
+    <a class="button primary" href="{% url 'logout' %}">
+        Sair
+    </a>
+
+
+{% else %}
 
         <a class="button outline" href="/login/">
             Entrar
