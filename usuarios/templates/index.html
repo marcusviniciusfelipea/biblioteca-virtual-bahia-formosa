@@ -64,7 +64,7 @@
             <div class="book-carousel">
                 {% for livro in livros %}
                     <div class="book-card">
-                        <a href="#">
+                        <a href="{% url 'detalhes_livro' livro.id_livro %}">
                             <div class="book-cover fallback-cover">
                                 <b>{{ livro.titulo|first|upper }}</b>
                                 <span>{{ livro.titulo }}</span>
