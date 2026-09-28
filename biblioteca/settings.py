@@ -28,6 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
     'https://localhost:8000',
+    'https://upgraded-goggles-xr5vjj59pr9r39v46-8000.app.github.dev',
 ]
 
 
