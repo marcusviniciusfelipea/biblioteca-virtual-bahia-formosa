@@ -65,10 +65,23 @@
                 {% for livro in livros %}
                     <div class="book-card">
                         <a href="{% url 'detalhes_livro' livro.id_livro %}">
-                            <div class="book-cover fallback-cover">
-                                <b>{{ livro.titulo|first|upper }}</b>
-                                <span>{{ livro.titulo }}</span>
-                            </div>
+                            {% if livro.imagem %}
+
+    <div class="book-cover">
+        <img
+            src="{{ livro.imagem.url }}"
+            alt="Capa do livro {{ livro.titulo }}"
+        >
+    </div>
+
+{% else %}
+
+    <div class="book-cover fallback-cover">
+        <b>{{ livro.titulo|first|upper }}</b>
+        <span>{{ livro.titulo }}</span>
+    </div>
+
+{% endif %}
 
                             <strong>{{ livro.titulo }}</strong>
                             <small>{{ livro.autor }}</small>

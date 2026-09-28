@@ -78,17 +78,30 @@
 <article class="book-card">
 
 <a href="{% url 'detalhes_livro' livro.livro.id_livro %}">
-        <div class="book-cover fallback-cover">
+        {% if livro.livro.imagem %}
 
-            <b>
-                {{ livro.livro.titulo|first|upper }}
-            </b>
+    <div class="book-cover">
+        <img
+            src="{{ livro.livro.imagem.url }}"
+            alt="Capa do livro {{ livro.livro.titulo }}"
+        >
+    </div>
 
-            <span>
-                {{ livro.livro.titulo }}
-            </span>
+{% else %}
 
-        </div>
+    <div class="book-cover fallback-cover">
+
+        <b>
+            {{ livro.livro.titulo|first|upper }}
+        </b>
+
+        <span>
+            {{ livro.livro.titulo }}
+        </span>
+
+    </div>
+
+{% endif %}
 
         <strong>
             {{ livro.livro.titulo }}

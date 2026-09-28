@@ -17,23 +17,51 @@
     </p>
 
 </section>
+<div class="message-thread book-synopsis">
+
+    <strong>Sinopse</strong>
+
+    {% if livro.sinopse %}
+        <p>
+            {{ livro.sinopse }}
+        </p>
+    {% else %}
+        <p>
+            Sinopse não informada.
+        </p>
+    {% endif %}
+
+</div>
 
 
 <section class="contact-layout">
 
     <div class="panel">
 
-        <div class="book-cover fallback-cover">
+        {% if livro.imagem %}
 
-            <b>
-                {{ livro.titulo|first|upper }}
-            </b>
+    <div class="book-cover">
+        <img
+            src="{{ livro.imagem.url }}"
+            alt="Capa do livro {{ livro.titulo }}"
+        >
+    </div>
 
-            <span>
-                {{ livro.titulo }}
-            </span>
+{% else %}
 
-        </div>
+    <div class="book-cover fallback-cover">
+
+        <b>
+            {{ livro.titulo|first|upper }}
+        </b>
+
+        <span>
+            {{ livro.titulo }}
+        </span>
+
+    </div>
+
+{% endif %}
 
     </div>
 
