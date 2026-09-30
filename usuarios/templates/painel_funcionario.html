@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Painel do Funcionário · Biblioteca Virtual Baía Formosa{% endblock %}
+
+{% block conteudo %}
+
+<section class="dashboard-head">
+
+    <div class="avatar-big">
+        {{ funcionario.nome|first|upper }}
+    </div>
+
+    <div>
+        <span class="eyebrow">ÁREA DO FUNCIONÁRIO</span>
+
+        <h1>Painel da biblioteca</h1>
+
+        <p>
+            Olá, {{ funcionario.nome }}. Gerencie o acervo e os serviços da biblioteca.
+        </p>
+    </div>
+
+    <a href="{% url 'logout' %}" class="button outline">
+        Sair
+    </a>
+
+</section>
+
+
+<section class="dashboard-grid">
+
+    <div class="panel">
+
+        <span class="eyebrow">ACERVO</span>
+
+        <h2>Livros</h2>
+
+        <p class="muted">
+            Cadastre, edite e organize os livros disponíveis na biblioteca.
+        </p>
+
+        <a href="{% url 'gerenciar_livros' %}" class="button primary">
+    Gerenciar livros
+        </a>
+
+    </div>
+
+
+    <div class="panel">
+
+        <span class="eyebrow">CIRCULAÇÃO</span>
+
+        <h2>Empréstimos</h2>
+
+        <p class="muted">
+            Registre e acompanhe os empréstimos realizados pelos usuários.
+        </p>
+
+        <a href="#" class="button primary">
+            Gerenciar empréstimos
+        </a>
+
+    </div>
+
+
+    <div class="panel">
+
+        <span class="eyebrow">DEVOLUÇÕES</span>
+
+        <h2>Devoluções</h2>
+
+        <p class="muted">
+            Registre devoluções e acompanhe os prazos dos empréstimos.
+        </p>
+
+        <a href="#" class="button primary">
+            Gerenciar devoluções
+        </a>
+
+    </div>
+
+
+    <div class="panel wide">
+
+        <span class="eyebrow">USUÁRIOS</span>
+
+        <h2>Usuários da biblioteca</h2>
+
+        <p class="muted">
+            Consulte os usuários cadastrados e acompanhe sua situação
+            na biblioteca.
+        </p>
+
+        <a href="#" class="button outline">
+            Gerenciar usuários
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}

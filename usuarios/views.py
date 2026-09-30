@@ -333,7 +333,7 @@ def bibliotecario_login(request):
             # Salva o funcionário na sessão
             request.session['funcionario_id'] = funcionario.id_funcionario
 
-            return redirect('inicio')
+            return redirect('painel_funcionario')
 
         # Login incorreto
         return render(request, 'bibliotecario_login.html', {
@@ -346,4 +346,173 @@ def bibliotecario_login(request):
     return render(request, 'bibliotecario_login.html', {
         'usuario': None,
         'funcionario': None,
+    })
+
+def painel_funcionario(request):
+
+    if not request.session.get('funcionario_id'):
+        return redirect('bibliotecario_login')
+
+    funcionario = Funcionario.objects.filter(
+        id_funcionario=request.session['funcionario_id']
+    ).first()
+
+    if not funcionario:
+        request.session.flush()
+        return redirect('bibliotecario_login')
+
+    return render(request, 'painel_funcionario.html', {
+        'funcionario': funcionario,
+    })
+
+def gerenciar_livros(request):
+    if not request.session.get('funcionario_id'):
+        return redirect('bibliotecario_login')
+
+    funcionario = Funcionario.objects.filter(
+        id_funcionario=request.session['funcionario_id']
+    ).first()
+
+    if not funcionario:
+        request.session.flush()
+        return redirect('bibliotecario_login')
+
+    if request.method == 'POST':
+
+        titulo = request.POST.get('titulo', '').strip()
+        autor = request.POST.get('autor', '').strip()
+        sinopse = request.POST.get('sinopse', '').strip()
+        imagem = request.FILES.get('imagem')
+        quantidade_exemplares = int(
+            request.POST.get('quantidade_exemplares', 0)
+        )
+
+        livro = Livro.objects.create(
+            titulo=titulo,
+            autor=autor,
+            sinopse=sinopse,
+            imagem=imagem
+        )
+
+        for _ in range(quantidade_exemplares):
+            Exemplar.objects.create(
+                titulo=livro.titulo,
+                autor=livro.autor,
+                livro=livro
+            )
+
+        return redirect('gerenciar_livros')
+
+    livros = Livro.objects.all().order_by('titulo')
+
+    return render(request, 'gerenciar_livros.html', {
+        'funcionario': funcionario,
+        'livros': livros,
+    })
+def editar_livro(request, id_livro):
+    if not request.session.get('funcionario_id'):
+        return redirect('bibliotecario_login')
+
+    funcionario = Funcionario.objects.filter(
+        id_funcionario=request.session['funcionario_id']
+    ).first()
+
+    if not funcionario:
+        request.session.flush()
+        return redirect('bibliotecario_login')
+
+    livro = Livro.objects.filter(
+        id_livro=id_livro
+    ).first()
+
+    if not livro:
+        return redirect('gerenciar_livros')
+
+    quantidade_exemplares = Exemplar.objects.filter(
+        livro=livro
+    ).count()
+
+    if request.method == 'POST':
+
+        titulo = request.POST.get('titulo', '').strip()
+        autor = request.POST.get('autor', '').strip()
+        sinopse = request.POST.get('sinopse', '').strip()
+        imagem = request.FILES.get('imagem')
+
+        nova_quantidade = int(
+            request.POST.get(
+                'quantidade_exemplares',
+                quantidade_exemplares
+            )
+        )
+
+        livro.titulo = titulo
+        livro.autor = autor
+        livro.sinopse = sinopse
+
+        if imagem:
+            livro.imagem = imagem
+
+        livro.save()
+
+        if nova_quantidade > quantidade_exemplares:
+            quantidade_adicionar = (
+                nova_quantidade - quantidade_exemplares
+            )
+
+            for _ in range(quantidade_adicionar):
+                Exemplar.objects.create(
+                    titulo=livro.titulo,
+                    autor=livro.autor,
+                    livro=livro
+                )
+
+        return redirect('gerenciar_livros')
+
+    return render(request, 'editar_livro.html', {
+        'funcionario': funcionario,
+        'livro': livro,
+        'quantidade_exemplares': quantidade_exemplares,
+    })
+def excluir_livro(request, id_livro):
+    if not request.session.get('funcionario_id'):
+        return redirect('bibliotecario_login')
+
+    funcionario = Funcionario.objects.filter(
+        id_funcionario=request.session['funcionario_id']
+    ).first()
+
+    if not funcionario:
+        request.session.flush()
+        return redirect('bibliotecario_login')
+
+    livro = Livro.objects.filter(
+        id_livro=id_livro
+    ).first()
+
+    if not livro:
+        return redirect('gerenciar_livros')
+
+    if request.method == 'POST':
+        livro.delete()
+        return redirect('gerenciar_livros')
+
+    return render(request, 'excluir_livro.html', {
+        'funcionario': funcionario,
+        'livro': livro,
+    })
+
+    funcionario = Funcionario.objects.filter(
+        id_funcionario=request.session['funcionario_id']
+    ).first()
+
+    if not funcionario:
+        request.session.flush()
+        return redirect('bibliotecario_login')
+
+    livros = Livro.objects.all().order_by('titulo')
+
+    return render(request, 'gerenciar_livros.html', {
+        'funcionario': funcionario,
+        'livros': livros,
     })

@@ -16,6 +16,26 @@ urlpatterns = [
     views.bibliotecario_login,
     name='bibliotecario_login'
 ),
+    path(
+    'bibliotecario/',
+    views.painel_funcionario,
+    name='painel_funcionario'
+),
+    path(
+    'bibliotecario/livros/',
+    views.gerenciar_livros,
+    name='gerenciar_livros'
+),
+    path(
+    'bibliotecario/livros/<int:id_livro>/editar/',
+    views.editar_livro,
+    name='editar_livro'
+),
+    path(
+    'bibliotecario/livros/<int:id_livro>/excluir/',
+    views.excluir_livro,
+    name='excluir_livro'
+),
     path('minha-conta/', views.minha_conta, name='minha_conta'),
 
     path('catalogo/', views.catalogo, name='catalogo'),

@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}Gerenciar Livros · Biblioteca Virtual Baía Formosa{% endblock %}
+
+{% block conteudo %}
+
+<section class="dashboard-head">
+
+    <div class="avatar-big">
+        {{ funcionario.nome|first|upper }}
+    </div>
+
+    <div>
+        <span class="eyebrow">ÁREA DO FUNCIONÁRIO</span>
+
+        <h1>Gerenciar livros</h1>
+
+        <p>
+            Cadastre e organize os livros do acervo da biblioteca.
+        </p>
+    </div>
+
+    <a href="{% url 'painel_funcionario' %}" class="button outline">
+        Voltar
+    </a>
+
+</section>
+
+<section class="panel">
+
+    <span class="eyebrow">ACERVO</span>
+    <section class="panel">
+
+    <span class="eyebrow">NOVO LIVRO</span>
+
+    <h2>Cadastrar livro</h2>
+
+    <form method="post" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <div class="book-admin-form">
+
+            <div>
+                <label for="titulo">Título</label>
+                <input
+                    type="text"
+                    id="titulo"
+                    name="titulo"
+                    maxlength="60"
+                    required
+                >
+            </div>
+
+            <div>
+                <label for="autor">Autor</label>
+                <input
+                    type="text"
+                    id="autor"
+                    name="autor"
+                    maxlength="60"
+                    required
+                >
+            </div>
+
+            <div>
+                <label for="sinopse">Sinopse</label>
+                <textarea
+                    id="sinopse"
+                    name="sinopse"
+                    rows="5"
+                ></textarea>
+            </div>
+
+            <div>
+                <label for="imagem">Capa do livro</label>
+                <input
+                    type="file"
+                    id="imagem"
+                    name="imagem"
+                    accept="image/*"
+                >
+            </div>
+
+            <div>
+                <label for="quantidade_exemplares">
+                    Quantidade de exemplares
+                </label>
+
+                <input
+                    type="number"
+                    id="quantidade_exemplares"
+                    name="quantidade_exemplares"
+                    min="0"
+                    value="1"
+                    required
+                >
+            </div>
+
+        </div>
+
+        <button type="submit" class="button primary">
+            Cadastrar livro
+        </button>
+
+    </form>
+
+</section>
+
+    <h2>Livros cadastrados</h2>
+
+    {% if livros %}
+
+        <div class="admin-list">
+
+            {% for livro in livros %}
+
+                <div class="admin-row">
+
+    <div>
+        <strong>{{ livro.titulo }}</strong>
+        <small>{{ livro.autor }}</small>
+    </div>
+
+    <div class="row-actions">
+
+        <span class="status-pill">
+            {{ livro.exemplar_set.count }} exemplar(es)
+        </span>
+
+        <a
+            href="{% url 'editar_livro' livro.id_livro %}"
+            class="button tiny"
+        >
+            Editar
+        </a>
+
+    </div>
+
+</div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <p class="muted">
+            Nenhum livro cadastrado ainda.
+        </p>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Livro · Biblioteca Virtual Baía Formosa{% endblock %}
+
+{% block conteudo %}
+
+<section class="dashboard-head">
+
+    <div class="avatar-big">
+        {{ funcionario.nome|first|upper }}
+    </div>
+
+    <div>
+        <span class="eyebrow">ÁREA DO FUNCIONÁRIO</span>
+
+        <h1>Editar livro</h1>
+
+        <p>
+            Altere as informações do livro e gerencie seus exemplares.
+        </p>
+    </div>
+
+    <a href="{% url 'gerenciar_livros' %}" class="button outline">
+        Voltar
+    </a>
+
+</section>
+
+
+<section class="panel">
+
+    <span class="eyebrow">EDITAR ACERVO</span>
+
+    <h2>{{ livro.titulo }}</h2>
+
+    <form method="post" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <div class="book-admin-form">
+
+            <div>
+                <label for="titulo">Título</label>
+
+                <input
+                    type="text"
+                    id="titulo"
+                    name="titulo"
+                    maxlength="60"
+                    value="{{ livro.titulo }}"
+                    required
+                >
+            </div>
+
+
+            <div>
+                <label for="autor">Autor</label>
+
+                <input
+                    type="text"
+                    id="autor"
+                    name="autor"
+                    maxlength="60"
+                    value="{{ livro.autor }}"
+                    required
+                >
+            </div>
+
+
+            <div>
+                <label for="sinopse">Sinopse</label>
+
+                <textarea
+                    id="sinopse"
+                    name="sinopse"
+                    rows="5"
+                >{{ livro.sinopse|default:'' }}</textarea>
+            </div>
+
+
+            <div>
+
+                <label>Capa atual</label>
+
+                {% if livro.imagem %}
+
+                    <div class="book-cover">
+                        <img
+                            src="{{ livro.imagem.url }}"
+                            alt="Capa do livro {{ livro.titulo }}"
+                        >
+                    </div>
+
+                {% else %}
+
+                    <p class="muted">
+                        Este livro ainda não possui uma capa.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+            <div>
+                <label for="imagem">
+                    Nova capa
+                </label>
+
+                <input
+                    type="file"
+                    id="imagem"
+                    name="imagem"
+                    accept="image/*"
+                >
+            </div>
+
+
+            <div>
+                <label for="quantidade_exemplares">
+                    Quantidade de exemplares
+                </label>
+
+                <input
+                    type="number"
+                    id="quantidade_exemplares"
+                    name="quantidade_exemplares"
+                    min="{{ quantidade_exemplares }}"
+                    value="{{ quantidade_exemplares }}"
+                    required
+                >
+
+                <small class="muted">
+                    Atualmente existem
+                    {{ quantidade_exemplares }}
+                    exemplar(es) deste livro.
+                </small>
+            </div>
+
+        </div>
+
+
+        <div class="row-actions">
+
+            <button
+                type="submit"
+                class="button primary"
+            >
+                Salvar alterações
+            </button>
+
+        </div>
+
+    </form>
+
+</section>
+
+
+<section class="panel">
+
+    <span class="eyebrow">ATENÇÃO</span>
+
+    <h2>Excluir livro</h2>
+
+    <p class="muted">
+        A exclusão do livro também removerá seus exemplares cadastrados.
+    </p>
+
+    <form
+        method="post"
+        action="{% url 'excluir_livro' livro.id_livro %}"
+    >
+
+        {% csrf_token %}
+
+        <button
+            type="submit"
+            class="button danger-btn"
+            onclick="return confirm('Tem certeza que deseja excluir este livro e seus exemplares?');"
+        >
+            Excluir livro
+        </button>
+
+    </form>
+
+</section>
+
+{% endblock %}
