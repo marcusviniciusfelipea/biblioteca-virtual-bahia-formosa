@@ -86,76 +86,15 @@
 
         <div class="message-thread">
 
-            <strong>Exemplares</strong>
+            <strong>Exemplares disponíveis</strong>
 
             <p>
-                {{ quantidade_exemplares }}
-                exemplar{% if quantidade_exemplares != 1 %}es{% endif %}
-                no acervo.
+                {{ quantidade_disponiveis }}
+                exemplar{% if quantidade_disponiveis != 1 %}es{% endif %}
+                disponível{% if quantidade_disponiveis != 1 %}is{% endif %}.
             </p>
 
         </div>
-
-
-        <div class="message-thread">
-
-            <strong>Disponibilidade</strong>
-
-            <p>
-
-                {% if status == 'Disponível' %}
-
-                    🟢 {{ quantidade_disponiveis }}
-                    disponível{% if quantidade_disponiveis != 1 %}is{% endif %}
-
-                {% elif status == 'Indisponível' %}
-
-                    🔴 Indisponível
-
-                {% else %}
-
-                    ⚪ Sem exemplares
-
-                {% endif %}
-
-            </p>
-
-        </div>
-
-
-        <h2>Exemplares cadastrados</h2>
-
-
-        {% if exemplares %}
-
-            {% for exemplar in exemplares %}
-
-                <div class="message-thread">
-
-                    <strong>
-                        Exemplar {{ exemplar.id_exemplar }}
-                    </strong>
-
-                    <p>
-                        {{ exemplar.titulo }}
-                    </p>
-
-                    <small>
-                        Autor: {{ exemplar.autor }}
-                    </small>
-
-                </div>
-
-            {% endfor %}
-
-        {% else %}
-
-            <p>
-                Nenhum exemplar deste livro foi cadastrado.
-            </p>
-
-        {% endif %}
-
 
         <a
             class="button outline"

@@ -270,21 +270,9 @@ def detalhes_livro(request, id_livro):
         quantidade_exemplares - quantidade_emprestados
     )
 
-    if quantidade_exemplares == 0:
-        status = 'Sem exemplares'
-
-    elif quantidade_disponiveis > 0:
-        status = 'Disponível'
-
-    else:
-        status = 'Indisponível'
-
     return render(request, 'detalhes_livro.html', {
         'livro': livro,
-        'exemplares': exemplares,
-        'quantidade_exemplares': quantidade_exemplares,
         'quantidade_disponiveis': quantidade_disponiveis,
-        'status': status,
     })
 
 
