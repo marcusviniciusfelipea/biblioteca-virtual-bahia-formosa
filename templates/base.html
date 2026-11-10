@@ -78,18 +78,27 @@
 
     {% endif %}
 
+    {% if funcionario %}
     <details class="more-menu">
-                <summary aria-label="Mais opções">
-                    ⋯
-                </summary>
+        <summary aria-label="Mais opções">
+            ⋯
+        </summary>
 
-                <div class="dropdown">
-                    <a href="/bibliotecario/login/">
-                        Área do bibliotecário
-                    </a>
-                </div>
+        <div class="dropdown">
+            <a href="{% url 'painel_funcionario' %}">
+                Painel do funcionário
+            </a>
 
-            </details>
+            <a href="{% url 'gerenciar_emprestimos' %}">
+                Gerenciar empréstimos
+            </a>
+
+            <a href="{% url 'gerenciar_devolucoes' %}">
+                Gerenciar devoluções
+            </a>
+        </div>
+    </details>
+{% endif %}
 
         </div>
 

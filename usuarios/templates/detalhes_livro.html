@@ -84,9 +84,38 @@
         </div>
 
 
-        <div class="message-thread">
+        
+<div class="message-thread">
 
-            <strong>Exemplares disponíveis</strong>
+    <strong>Disponibilidade</strong>
+
+    {% if status == 'Disponível' %}
+
+        <p>
+            <span class="status-pill">DISPONÍVEL</span>
+        </p>
+
+        <p>
+            {{ quantidade_disponiveis }}
+            exemplar{% if quantidade_disponiveis != 1 %}es{% endif %}
+            disponível{% if quantidade_disponiveis != 1 %}is{% endif %}.
+        </p>
+
+    {% elif status == 'Indisponível' %}
+
+        <p>
+            <span class="status-pill danger">INDISPONÍVEL</span>
+        </p>
+
+        <p>Todos os exemplares estão emprestados.</p>
+
+    {% else %}
+
+        <p>Não há exemplares cadastrados para este livro.</p>
+
+    {% endif %}
+
+</div>
 
             <p>
                 {{ quantidade_disponiveis }}

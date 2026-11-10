@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Gerenciar empréstimos · Biblioteca Virtual{% endblock %}
+
+{% block conteudo %}
+
+<section class="page-head simple">
+    <span class="eyebrow">ÁREA DO FUNCIONÁRIO</span>
+    <h1>Gerenciar empréstimos</h1>
+    <p>Registre retiradas e acompanhe as devoluções dos livros.</p>
+</section>
+
+<section class="panel">
+
+    <h2>Novo empréstimo</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label for="usuario">Usuário</label>
+        <select name="usuario" id="usuario" required>
+            <option value="">Selecione um usuário</option>
+
+            {% for usuario in usuarios %}
+                <option value="{{ usuario.id_usuario }}">
+                    {{ usuario.nome }} — {{ usuario.email }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label for="exemplar">Exemplar disponível</label>
+        <select name="exemplar" id="exemplar" required>
+            <option value="">Selecione um exemplar</option>
+
+            {% for exemplar in exemplares %}
+                <option value="{{ exemplar.id_exemplar }}">
+                    {{ exemplar.livro.titulo }} — Exemplar {{ exemplar.id_exemplar }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <p class="muted">
+            O prazo de devolução será calculado automaticamente: 7 dias.
+        </p>
+
+        <button type="submit" class="button primary">
+            Registrar empréstimo
+        </button>
+    </form>
+
+</section>
+
+
+<section class="panel">
+
+    <h2>Empréstimos registrados</h2>
+
+    {% for emprestimo in emprestimos %}
+
+        <div class="message-thread">
+
+            <h3>{{ emprestimo.exemplar.livro.titulo }}</h3>
+
+            <p>
+                <strong>Usuário:</strong>
+                {{ emprestimo.usuario.nome }}
+            </p>
+
+            <p>
+                <strong>Data do empréstimo:</strong>
+                {{ emprestimo.data|date:"d/m/Y" }}
+            </p>
+
+            <p>
+                <strong>Devolução prevista:</strong>
+                {{ emprestimo.previsao_devolucao|date:"d/m/Y" }}
+            </p>
+
+            {% if emprestimo.data_devolucao %}
+
+                <p>
+                    <strong>Devolvido em:</strong>
+                    {{ emprestimo.data_devolucao|date:"d/m/Y" }}
+                </p>
+
+                <span class="eyebrow">DEVOLVIDO</span>
+
+            {% else %}
+
+                {% if emprestimo.atrasado %}
+                    <span class="eyebrow">ATRASADO</span>
+                {% else %}
+                    <span class="eyebrow">EM ANDAMENTO</span>
+                {% endif %}
+
+                <form method="POST"
+                      action="{% url 'registrar_devolucao' emprestimo.id %}">
+                    {% csrf_token %}
+
+                    <button type="submit" class="button primary">
+                        Registrar devolução
+                    </button>
+                </form>
+
+            {% endif %}
+
+        </div>
+
+    {% empty %}
+
+        <p>Nenhum empréstimo registrado.</p>
+
+    {% endfor %}
+
+</section>
+
+{% endblock %}

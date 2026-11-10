@@ -67,6 +67,48 @@
             Explorar catálogo →
         </a>
 
+        <h3>Meus empréstimos</h3>
+
+{% for emprestimo in emprestimos %}
+
+    <div class="message-thread">
+
+        <strong>{{ emprestimo.exemplar.livro.titulo }}</strong>
+
+        <p>
+            Retirada:
+            {{ emprestimo.data|date:"d/m/Y" }}
+        </p>
+
+        <p>
+            Devolução prevista:
+            {{ emprestimo.previsao_devolucao|date:"d/m/Y" }}
+        </p>
+
+        {% if emprestimo.devolvido %}
+
+            <p>Livro devolvido em
+                {{ emprestimo.data_devolucao|date:"d/m/Y" }}
+            </p>
+
+        {% elif emprestimo.atrasado %}
+
+            <p>Empréstimo atrasado.</p>
+
+        {% else %}
+
+            <p>Empréstimo em andamento.</p>
+
+        {% endif %}
+
+    </div>
+
+{% empty %}
+
+    <p>Você ainda não possui empréstimos.</p>
+
+{% endfor %}
+
     </div>
 
 </section>

@@ -138,9 +138,8 @@ def catalogo(request):
 
         quantidade_emprestados = Emprestimo.objects.filter(
             exemplar__in=exemplares,
-            previsao_devolucao__gte=hoje
+            data_devolucao__isnull=True
         ).count()
-
         quantidade_disponiveis = (
             quantidade_exemplares - quantidade_emprestados
         )
@@ -239,8 +238,16 @@ def minha_conta(request):
         id_usuario=request.session['usuario_id']
     ).first()
 
+    emprestimos = Emprestimo.objects.filter(
+        usuario=usuario
+    ).select_related(
+        'exemplar',
+        'exemplar__livro'
+    ).order_by('-data')
+
     return render(request, 'minha_conta.html', {
         'usuario': usuario,
+        'emprestimos': emprestimos,
     })
 
 
@@ -257,22 +264,31 @@ def detalhes_livro(request, id_livro):
         livro=livro
     )
 
-    hoje = timezone.now().date()
-
     quantidade_exemplares = exemplares.count()
 
     quantidade_emprestados = Emprestimo.objects.filter(
         exemplar__in=exemplares,
-        previsao_devolucao__gte=hoje
+        data_devolucao__isnull=True
     ).count()
 
     quantidade_disponiveis = (
         quantidade_exemplares - quantidade_emprestados
     )
 
+    if quantidade_exemplares == 0:
+        status = 'Sem exemplares'
+
+    elif quantidade_disponiveis > 0:
+        status = 'Disponível'
+
+    else:
+        status = 'Indisponível'
+
     return render(request, 'detalhes_livro.html', {
         'livro': livro,
         'quantidade_disponiveis': quantidade_disponiveis,
+        'quantidade_exemplares': quantidade_exemplares,
+        'status': status,
     })
 
 

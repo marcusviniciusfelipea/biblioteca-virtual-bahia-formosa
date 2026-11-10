@@ -3,6 +3,7 @@ from django.urls import path
 from usuarios import views
 from django.conf import settings
 from django.conf.urls.static import static
+from emprestimos import views as emprestimos_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -48,7 +49,10 @@ urlpatterns = [
 
     path('servicos/', views.servicos, name='servicos'),
     path('contato/', views.contato, name='contato'),
-    
+    path('bibliotecario/emprestimos/', emprestimos_views.gerenciar_emprestimos, name='gerenciar_emprestimos'),
+    path('bibliotecario/emprestimos/<int:emprestimo_id>/devolver/', emprestimos_views.registrar_devolucao, name='registrar_devolucao'),
+    path('bibliotecario/devolucoes/', emprestimos_views.gerenciar_devolucoes, name='gerenciar_devolucoes'),
+
 ]
 
 if settings.DEBUG:
