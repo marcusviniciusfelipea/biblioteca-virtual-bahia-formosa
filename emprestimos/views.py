@@ -11,6 +11,7 @@ from usuarios.models import Usuario
 from funcionarios.models import Funcionario
 from exemplares.models import Exemplar
 from prazo.models import Prazo
+from reservas.models import Reserva
 
 
 def gerenciar_emprestimos(request):
@@ -55,6 +56,30 @@ def gerenciar_emprestimos(request):
                 )
                 return redirect('gerenciar_emprestimos')
 
+            # Verifica a primeira reserva ativa deste livro.
+            primeira_reserva = Reserva.objects.select_for_update().filter(
+                livro=exemplar.livro,
+                status__in=['Aguardando', 'Disponível']
+            ).order_by('id_reserva').first()
+
+            # Se existe reserva, verifica se pode ser retirada
+            # e se pertence ao usuário selecionado.
+            if primeira_reserva:
+
+                if primeira_reserva.status != 'Disponível':
+                    messages.error(
+                        request,
+                        'Este livro ainda não está disponível para retirada.'
+                    )
+                    return redirect('gerenciar_emprestimos')
+
+                if primeira_reserva.usuario_id != usuario.id_usuario:
+                    messages.error(
+                        request,
+                        f'Este livro está reservado para {primeira_reserva.usuario.nome}.'
+                    )
+                    return redirect('gerenciar_emprestimos')
+
             prazo = Prazo.objects.first()
 
             if not prazo:
@@ -74,6 +99,12 @@ def gerenciar_emprestimos(request):
                 usuario=usuario,
                 prazo=prazo
             )
+
+            # Conclui a reserva quando o empréstimo é feito
+            # para a pessoa que está no início da fila.
+            if primeira_reserva:
+                primeira_reserva.status = 'Concluída'
+                primeira_reserva.save(update_fields=['status'])
 
         messages.success(
             request,
@@ -148,20 +179,52 @@ def registrar_devolucao(request, emprestimo_id):
     )
 
     if emprestimo.data_devolucao:
+
         messages.info(
             request,
             'Este livro já foi devolvido.'
         )
+
     else:
+
         emprestimo.data_devolucao = timezone.localdate()
 
         emprestimo.save(
             update_fields=['data_devolucao']
         )
 
+        livro = emprestimo.exemplar.livro
+
+        # Busca a primeira reserva que está aguardando.
+        reserva = Reserva.objects.filter(
+            livro=livro,
+            status='Aguardando'
+        ).order_by('id_reserva').first()
+
+        # Só atualiza a data se realmente existir uma reserva.
+        if reserva:
+
+            reserva.status = 'Disponível'
+
+            reserva.data_limite_retirada = (
+                timezone.localdate() + timedelta(days=3)
+            )
+
+            reserva.save(
+                update_fields=[
+                    'status',
+                    'data_limite_retirada'
+                ]
+            )
+
+            messages.info(
+                request,
+                f'O livro ficou disponível para {reserva.usuario.nome}.'
+            )
+
         messages.success(
             request,
-            f'Devolução de "{emprestimo.exemplar.titulo}" registrada.'
+            f'Devolução de "{livro.titulo}" registrada.'
         )
 
     return redirect('gerenciar_emprestimos')

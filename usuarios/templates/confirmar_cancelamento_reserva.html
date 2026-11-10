@@ -1,0 +1,34 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Cancelar reserva · Biblioteca Virtual{% endblock %}
+
+{% block conteudo %}
+
+<section class="page-head simple">
+    <span class="eyebrow">MINHAS RESERVAS</span>
+    <h1>Cancelar reserva?</h1>
+    <p>Confirme se deseja realmente cancelar esta reserva.</p>
+</section>
+
+<section class="panel">
+    <h2>{{ reserva.livro.titulo }}</h2>
+
+    <p>
+        Esta ação cancelará sua reserva deste livro.
+    </p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <button type="submit" class="button primary">
+            Sim, cancelar reserva
+        </button>
+
+        <a href="{% url 'minha_conta' %}" class="button">
+            Não, voltar
+        </a>
+    </form>
+</section>
+
+{% endblock %}

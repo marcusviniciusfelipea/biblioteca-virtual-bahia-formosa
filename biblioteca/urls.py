@@ -4,6 +4,7 @@ from usuarios import views
 from django.conf import settings
 from django.conf.urls.static import static
 from emprestimos import views as emprestimos_views
+from reservas import views as reservas_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -21,6 +22,16 @@ urlpatterns = [
     'bibliotecario/',
     views.painel_funcionario,
     name='painel_funcionario'
+),
+path(
+    'reservas/<int:id_reserva>/cancelar/',
+    reservas_views.cancelar_reserva,
+    name='cancelar_reserva'
+),
+    path(
+    'livro/<int:id_livro>/reservar/',
+    reservas_views.reservar_livro,
+    name='reservar_livro'
 ),
     path(
     'bibliotecario/livros/',

@@ -78,13 +78,16 @@
 
     {% endif %}
 
-    {% if funcionario %}
-    <details class="more-menu">
-        <summary aria-label="Mais opções">
-            ⋯
-        </summary>
+    
+<details class="more-menu">
+    <summary aria-label="Mais opções">
+        ⋯
+    </summary>
 
-        <div class="dropdown">
+    <div class="dropdown">
+
+        {% if funcionario %}
+
             <a href="{% url 'painel_funcionario' %}">
                 Painel do funcionário
             </a>
@@ -96,9 +99,18 @@
             <a href="{% url 'gerenciar_devolucoes' %}">
                 Gerenciar devoluções
             </a>
-        </div>
-    </details>
-{% endif %}
+
+        {% else %}
+
+            <a href="{% url 'bibliotecario_login' %}">
+                Área do bibliotecário
+            </a>
+
+        {% endif %}
+
+    </div>
+</details>
+
 
         </div>
 
@@ -107,12 +119,23 @@
 </header>
 
 
+
 <main>
 
-    {% block conteudo %}
-    {% endblock %}
+    {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="notice {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% block conteudo %}{% endblock %}
 
 </main>
+
 
 
 <footer class="rodape">

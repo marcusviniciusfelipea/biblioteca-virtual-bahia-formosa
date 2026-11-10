@@ -10,6 +10,7 @@ from usuarios.models import Usuario
 from funcionarios.models import Funcionario
 from exemplares.models import Exemplar
 from emprestimos.models import Emprestimo
+from reservas.models import Reserva
 
 
 def inicio(request):
@@ -229,6 +230,7 @@ def logout(request):
     return redirect('inicio')
 
 
+
 def minha_conta(request):
 
     if not request.session.get('usuario_id'):
@@ -245,9 +247,16 @@ def minha_conta(request):
         'exemplar__livro'
     ).order_by('-data')
 
+    reservas = Reserva.objects.filter(
+        usuario=usuario
+    ).select_related(
+        'livro'
+    ).order_by('-data_reserva', '-id_reserva')
+
     return render(request, 'minha_conta.html', {
         'usuario': usuario,
         'emprestimos': emprestimos,
+        'reservas': reservas,
     })
 
 

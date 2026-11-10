@@ -109,6 +109,44 @@
 
 {% endfor %}
 
+
+<h3>Minhas reservas</h3>
+
+{% for reserva in reservas %}
+
+    <div class="message-thread">
+
+        <strong>{{ reserva.livro.titulo }}</strong>
+
+        <p>
+            Data da reserva:
+            {{ reserva.data_reserva|date:"d/m/Y" }}
+        </p>
+
+        <p>
+            Status: {{ reserva.status }}
+        </p>
+
+        {% if reserva.status == 'Aguardando' or reserva.status == 'Disponível' %}
+
+            <a
+                href="{% url 'cancelar_reserva' reserva.id_reserva %}"
+                class="button"
+            >
+                Cancelar reserva
+            </a>
+
+        {% endif %}
+
+    </div>
+
+{% empty %}
+
+    <p>Você ainda não possui reservas.</p>
+
+{% endfor %}
+
+
     </div>
 
 </section>

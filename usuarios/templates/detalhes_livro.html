@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 
 {% block title %}
@@ -12,27 +13,21 @@
 
     <h1>{{ livro.titulo }}</h1>
 
-    <p>
-        Autor: {{ livro.autor }}
-    </p>
+    <p>Autor: {{ livro.autor }}</p>
 
 </section>
+
 <div class="message-thread book-synopsis">
 
     <strong>Sinopse</strong>
 
     {% if livro.sinopse %}
-        <p>
-            {{ livro.sinopse }}
-        </p>
+        <p>{{ livro.sinopse }}</p>
     {% else %}
-        <p>
-            Sinopse não informada.
-        </p>
+        <p>Sinopse não informada.</p>
     {% endif %}
 
 </div>
-
 
 <section class="contact-layout">
 
@@ -40,31 +35,23 @@
 
         {% if livro.imagem %}
 
-    <div class="book-cover">
-        <img
-            src="{{ livro.imagem.url }}"
-            alt="Capa do livro {{ livro.titulo }}"
-        >
-    </div>
+            <div class="book-cover">
+                <img
+                    src="{{ livro.imagem.url }}"
+                    alt="Capa do livro {{ livro.titulo }}"
+                >
+            </div>
 
-{% else %}
+        {% else %}
 
-    <div class="book-cover fallback-cover">
+            <div class="book-cover fallback-cover">
+                <b>{{ livro.titulo|first|upper }}</b>
+                <span>{{ livro.titulo }}</span>
+            </div>
 
-        <b>
-            {{ livro.titulo|first|upper }}
-        </b>
-
-        <span>
-            {{ livro.titulo }}
-        </span>
+        {% endif %}
 
     </div>
-
-{% endif %}
-
-    </div>
-
 
     <div class="panel contact-form">
 
@@ -72,58 +59,71 @@
 
         <h2>Informações do livro</h2>
 
-
         <div class="message-thread">
 
             <strong>Autor</strong>
 
-            <p>
-                {{ livro.autor }}
-            </p>
+            <p>{{ livro.autor }}</p>
 
         </div>
 
+        <div class="message-thread">
 
-        
-<div class="message-thread">
+            <strong>Disponibilidade</strong>
 
-    <strong>Disponibilidade</strong>
+            {% if status == 'Disponível' %}
 
-    {% if status == 'Disponível' %}
+                <p>
+                    <span class="status-pill">DISPONÍVEL</span>
+                </p>
 
-        <p>
-            <span class="status-pill">DISPONÍVEL</span>
-        </p>
+                <p>
+                    {{ quantidade_disponiveis }}
+                    exemplar{% if quantidade_disponiveis != 1 %}es{% endif %}
+                    disponível{% if quantidade_disponiveis != 1 %}is{% endif %}.
+                </p>
 
-        <p>
-            {{ quantidade_disponiveis }}
-            exemplar{% if quantidade_disponiveis != 1 %}es{% endif %}
-            disponível{% if quantidade_disponiveis != 1 %}is{% endif %}.
-        </p>
+            {% elif status == 'Indisponível' %}
 
-    {% elif status == 'Indisponível' %}
+                <p>
+                    <span class="status-pill danger">INDISPONÍVEL</span>
+                </p>
 
-        <p>
-            <span class="status-pill danger">INDISPONÍVEL</span>
-        </p>
+                <p>Todos os exemplares estão emprestados.</p>
 
-        <p>Todos os exemplares estão emprestados.</p>
+            {% else %}
 
-    {% else %}
+                <p>Não há exemplares cadastrados para este livro.</p>
 
-        <p>Não há exemplares cadastrados para este livro.</p>
-
-    {% endif %}
-
-</div>
-
-            <p>
-                {{ quantidade_disponiveis }}
-                exemplar{% if quantidade_disponiveis != 1 %}es{% endif %}
-                disponível{% if quantidade_disponiveis != 1 %}is{% endif %}.
-            </p>
+            {% endif %}
 
         </div>
+
+        {% if usuario %}
+
+            <form
+                method="POST"
+                action="{% url 'reservar_livro' livro.id_livro %}"
+            >
+                {% csrf_token %}
+
+                <button type="submit" class="button primary">
+                    Reservar livro
+                </button>
+
+            </form>
+
+        {% else %}
+
+            <p>
+                Faça login para reservar este livro.
+            </p>
+
+            <a href="{% url 'login' %}" class="button primary">
+                Entrar para reservar
+            </a>
+
+        {% endif %}
 
         <a
             class="button outline"
