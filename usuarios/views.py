@@ -11,6 +11,7 @@ from funcionarios.models import Funcionario
 from exemplares.models import Exemplar
 from emprestimos.models import Emprestimo
 from reservas.models import Reserva
+from reservas.utils import atualizar_reservas_vencidas
 
 
 def inicio(request):
@@ -231,10 +232,14 @@ def logout(request):
 
 
 
+
 def minha_conta(request):
 
     if not request.session.get('usuario_id'):
         return redirect('login')
+
+    # Verifica e atualiza as reservas vencidas.
+    atualizar_reservas_vencidas()
 
     usuario = Usuario.objects.filter(
         id_usuario=request.session['usuario_id']
@@ -258,6 +263,7 @@ def minha_conta(request):
         'emprestimos': emprestimos,
         'reservas': reservas,
     })
+
 
 
 def detalhes_livro(request, id_livro):
