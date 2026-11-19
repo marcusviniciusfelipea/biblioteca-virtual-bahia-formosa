@@ -126,6 +126,13 @@
         <p>
             Status: {{ reserva.status }}
         </p>
+        
+        {% if reserva.status == 'Disponível' %}
+    <p>
+        Retirar até:
+        {{ reserva.data_limite_retirada|date:"d/m/Y" }}
+    </p>
+{% endif %}
 
         {% if reserva.status == 'Aguardando' or reserva.status == 'Disponível' %}
 

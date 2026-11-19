@@ -30,26 +30,24 @@ def inicio(request):
 
     if request.session.get('usuario_id'):
         usuario = Usuario.objects.filter(
-        id_usuario=request.session['usuario_id']
-    ).first()
+            id_usuario=request.session['usuario_id']
+        ).first()
 
     if request.session.get('funcionario_id'):
         funcionario = Funcionario.objects.filter(
-        id_funcionario=request.session['funcionario_id']
-    ).first()
+            id_funcionario=request.session['funcionario_id']
+        ).first()
 
     return render(request, 'index.html', {
         'livros': livros,
         'busca': busca,
         'usuario': usuario,
         'funcionario': funcionario,
-})
+    })
 
 
 def cadastro(request):
-
     if request.method == 'POST':
-
         nome = request.POST.get('nome', '').strip()
         email = request.POST.get('email', '').strip()
         telefone = request.POST.get('telefone', '').strip()
@@ -57,7 +55,6 @@ def cadastro(request):
 
         erros = []
 
-        # Verifica se os campos foram preenchidos
         if not nome:
             erros.append('O nome é obrigatório.')
 
@@ -70,18 +67,15 @@ def cadastro(request):
         if not senha:
             erros.append('A senha é obrigatória.')
 
-        # Verifica o formato do e-mail
         if email:
             try:
                 validate_email(email)
             except ValidationError:
                 erros.append('Digite um e-mail válido.')
 
-        # Verifica se o e-mail já está cadastrado
         if email and Usuario.objects.filter(email=email).exists():
             erros.append('Este e-mail já está cadastrado.')
 
-        # Verifica o telefone
         if telefone:
             numeros_telefone = re.sub(r'\D', '', telefone)
 
@@ -90,11 +84,9 @@ def cadastro(request):
                     'Digite um telefone válido com DDD e 9 dígitos.'
                 )
 
-        # Verifica o tamanho da senha
         if senha and len(senha) < 6:
             erros.append('A senha deve ter pelo menos 6 caracteres.')
 
-        # Se houver algum erro, volta para o cadastro
         if erros:
             return render(request, 'cadastro.html', {
                 'erros': erros,
@@ -103,7 +95,6 @@ def cadastro(request):
                 'telefone': telefone,
             })
 
-        # Se estiver tudo certo, cria o usuário
         Usuario.objects.create(
             nome=nome,
             email=email,
@@ -115,7 +106,10 @@ def cadastro(request):
 
     return render(request, 'cadastro.html')
 
+
 def catalogo(request):
+    atualizar_reservas_vencidas()
+
     busca = request.GET.get('q', '').strip()
 
     livros = Livro.objects.all()
@@ -126,12 +120,9 @@ def catalogo(request):
             Q(autor__icontains=busca)
         )
 
-    hoje = timezone.now().date()
-
     livros_com_exemplares = []
 
     for livro in livros:
-
         exemplares = Exemplar.objects.filter(
             livro=livro
         )
@@ -142,16 +133,21 @@ def catalogo(request):
             exemplar__in=exemplares,
             data_devolucao__isnull=True
         ).count()
-        quantidade_disponiveis = (
-            quantidade_exemplares - quantidade_emprestados
+
+        quantidade_reservados = Reserva.objects.filter(
+            livro=livro,
+            status='Disponível'
+        ).count()
+
+        quantidade_disponiveis = max(
+            0,
+            quantidade_exemplares - quantidade_emprestados - quantidade_reservados
         )
 
         if quantidade_exemplares == 0:
             status = 'Sem exemplares'
-
         elif quantidade_disponiveis > 0:
             status = 'Disponível'
-
         else:
             status = 'Indisponível'
 
@@ -177,36 +173,30 @@ def contato(request):
 
 
 def login(request):
-
     if request.method == 'POST':
-
         email = request.POST.get('email', '').strip()
         senha = request.POST.get('senha', '').strip()
 
         erros = []
 
-        # Verifica se os campos foram preenchidos
         if not email:
             erros.append('O e-mail é obrigatório.')
 
         if not senha:
             erros.append('A senha é obrigatória.')
 
-        # Verifica o formato do e-mail
         if email:
             try:
                 validate_email(email)
             except ValidationError:
                 erros.append('Digite um e-mail válido.')
 
-        # Se houver algum erro, volta para o login
         if erros:
             return render(request, 'login.html', {
                 'erros': erros,
                 'email': email,
             })
 
-        # Procura o usuário
         usuario = Usuario.objects.filter(
             email=email,
             senha=senha
@@ -217,7 +207,6 @@ def login(request):
             request.session['usuario_id'] = usuario.id_usuario
             return redirect('inicio')
 
-        # E-mail ou senha não correspondem
         return render(request, 'login.html', {
             'erros': ['E-mail ou senha incorretos.'],
             'email': email,
@@ -231,14 +220,10 @@ def logout(request):
     return redirect('inicio')
 
 
-
-
 def minha_conta(request):
-
     if not request.session.get('usuario_id'):
         return redirect('login')
 
-    # Verifica e atualiza as reservas vencidas.
     atualizar_reservas_vencidas()
 
     usuario = Usuario.objects.filter(
@@ -265,8 +250,8 @@ def minha_conta(request):
     })
 
 
-
 def detalhes_livro(request, id_livro):
+    atualizar_reservas_vencidas()
 
     livro = Livro.objects.filter(
         id_livro=id_livro
@@ -286,16 +271,20 @@ def detalhes_livro(request, id_livro):
         data_devolucao__isnull=True
     ).count()
 
-    quantidade_disponiveis = (
-        quantidade_exemplares - quantidade_emprestados
+    quantidade_reservados = Reserva.objects.filter(
+        livro=livro,
+        status='Disponível'
+    ).count()
+
+    quantidade_disponiveis = max(
+        0,
+        quantidade_exemplares - quantidade_emprestados - quantidade_reservados
     )
 
     if quantidade_exemplares == 0:
         status = 'Sem exemplares'
-
     elif quantidade_disponiveis > 0:
         status = 'Disponível'
-
     else:
         status = 'Indisponível'
 
@@ -308,29 +297,24 @@ def detalhes_livro(request, id_livro):
 
 
 def bibliotecario_login(request):
-
     if request.method == 'POST':
-
         email = request.POST.get('email', '').strip()
         senha = request.POST.get('senha', '').strip()
 
         erros = []
 
-        # Verifica se os campos foram preenchidos
         if not email:
             erros.append('O e-mail é obrigatório.')
 
         if not senha:
             erros.append('A senha é obrigatória.')
 
-        # Verifica o formato do e-mail
         if email:
             try:
                 validate_email(email)
             except ValidationError:
                 erros.append('Digite um e-mail válido.')
 
-        # Se houver algum erro, volta para o login
         if erros:
             return render(request, 'bibliotecario_login.html', {
                 'erros': erros,
@@ -339,22 +323,16 @@ def bibliotecario_login(request):
                 'funcionario': None,
             })
 
-        # Procura o funcionário
         funcionario = Funcionario.objects.filter(
             email=email,
             senha=senha
         ).first()
 
         if funcionario:
-            # Remove o usuário comum da sessão
             request.session.pop('usuario_id', None)
-
-            # Salva o funcionário na sessão
             request.session['funcionario_id'] = funcionario.id_funcionario
-
             return redirect('painel_funcionario')
 
-        # Login incorreto
         return render(request, 'bibliotecario_login.html', {
             'erros': ['E-mail ou senha incorretos.'],
             'email': email,
@@ -367,8 +345,8 @@ def bibliotecario_login(request):
         'funcionario': None,
     })
 
-def painel_funcionario(request):
 
+def painel_funcionario(request):
     if not request.session.get('funcionario_id'):
         return redirect('bibliotecario_login')
 
@@ -384,6 +362,7 @@ def painel_funcionario(request):
         'funcionario': funcionario,
     })
 
+
 def gerenciar_livros(request):
     if not request.session.get('funcionario_id'):
         return redirect('bibliotecario_login')
@@ -397,7 +376,6 @@ def gerenciar_livros(request):
         return redirect('bibliotecario_login')
 
     if request.method == 'POST':
-
         titulo = request.POST.get('titulo', '').strip()
         autor = request.POST.get('autor', '').strip()
         sinopse = request.POST.get('sinopse', '').strip()
@@ -428,6 +406,8 @@ def gerenciar_livros(request):
         'funcionario': funcionario,
         'livros': livros,
     })
+
+
 def editar_livro(request, id_livro):
     if not request.session.get('funcionario_id'):
         return redirect('bibliotecario_login')
@@ -452,7 +432,6 @@ def editar_livro(request, id_livro):
     ).count()
 
     if request.method == 'POST':
-
         titulo = request.POST.get('titulo', '').strip()
         autor = request.POST.get('autor', '').strip()
         sinopse = request.POST.get('sinopse', '').strip()
@@ -493,6 +472,8 @@ def editar_livro(request, id_livro):
         'livro': livro,
         'quantidade_exemplares': quantidade_exemplares,
     })
+
+
 def excluir_livro(request, id_livro):
     if not request.session.get('funcionario_id'):
         return redirect('bibliotecario_login')
@@ -519,19 +500,4 @@ def excluir_livro(request, id_livro):
     return render(request, 'excluir_livro.html', {
         'funcionario': funcionario,
         'livro': livro,
-    })
-
-    funcionario = Funcionario.objects.filter(
-        id_funcionario=request.session['funcionario_id']
-    ).first()
-
-    if not funcionario:
-        request.session.flush()
-        return redirect('bibliotecario_login')
-
-    livros = Livro.objects.all().order_by('titulo')
-
-    return render(request, 'gerenciar_livros.html', {
-        'funcionario': funcionario,
-        'livros': livros,
     })

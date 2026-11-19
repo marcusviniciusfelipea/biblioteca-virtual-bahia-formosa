@@ -228,3 +228,5 @@ def registrar_devolucao(request, emprestimo_id):
         )
 
     return redirect('gerenciar_emprestimos')
+
+    
